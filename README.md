@@ -414,6 +414,9 @@ python -m pip install behaviours
 ```
 
 Requires Python 3.11–3.14. On 3.11, `typing_extensions` is a conditional dependency.
+
+## Development
+
 From a checkout:
 
 ```sh
