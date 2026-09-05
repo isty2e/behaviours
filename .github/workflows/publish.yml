@@ -1,0 +1,102 @@
+# Publish to PyPI with GitHub OIDC (trusted publishing). No API tokens.
+#
+# One-time pending publisher, before the first upload:
+#   https://pypi.org/manage/account/publishing/
+#     PyPI project name: behaviours
+#     Owner: isty2e
+#     Repository name: behaviours
+#     Workflow name: publish.yml
+#     Environment name: pypi
+#
+# First 0.1.0 upload: Actions → Publish to PyPI → Run workflow → tag v0.1.0.
+# Later versions: GitHub release published from a tag that includes this file.
+
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Git tag to build and publish
+        required: true
+        type: string
+        default: v0.1.0
+
+concurrency:
+  group: pypi-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      PUBLISH_TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.event.release.tag_name || github.event.inputs.tag }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: false
+          python-version: "3.13"
+
+      - name: Build
+        run: uv build --no-sources
+
+      - name: Check version matches tag
+        id: version
+        run: |
+          VERSION="${PUBLISH_TAG#v}"
+          test -f "dist/behaviours-${VERSION}.tar.gz"
+          test -f "dist/behaviours-${VERSION}-py3-none-any.whl"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke test wheel
+        run: |
+          uv run --isolated --no-project --with dist/*.whl \
+            python -c 'from behaviours import mixin, trait'
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/behaviours/${{ needs.build.outputs.version }}/
+    permissions:
+      id-token: write
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: false
+
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish
+        run: uv publish --trusted-publishing always
