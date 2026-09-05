@@ -24,6 +24,10 @@ dependencies = [
   "typing-extensions>=4.12; python_version < '3.12'",
 ]
 
+[project.urls]
+Homepage = "https://github.com/isty2e/behaviours"
+Issues = "https://github.com/isty2e/behaviours/issues"
+
 [project.optional-dependencies]
 dev = [
   "pre-commit>=4.0",
