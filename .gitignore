@@ -1,0 +1,48 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Packaging
+build/
+dist/
+wheels/
+*.egg-info/
+.eggs/
+*.egg
+
+# Environments
+.env
+.venv/
+.venv314/
+venv/
+env/
+
+# Tests and coverage
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.hypothesis/
+.tox/
+.nox/
+
+# Type checkers and linters
+.mypy_cache/
+.ruff_cache/
+.pyrefly/
+.pyrefly_cache/
+.pyrefly-cache/
+
+# Hatch-vcs
+src/behaviours/_version.py
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+
+# Local tooling that must not ship
+.worktrees/
+.tickets/

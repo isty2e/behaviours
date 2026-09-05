@@ -1,0 +1,80 @@
+[build-system]
+requires = ["hatchling>=1.24", "hatch-vcs>=0.5"]
+build-backend = "hatchling.build"
+
+[project]
+name = "behaviours"
+dynamic = ["version"]
+description = "Strict native-inheritance traits and single-spine mixins for Python"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11,<3.15"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
+]
+keywords = ["trait", "mixin", "inheritance", "composition"]
+dependencies = [
+  "typing-extensions>=4.12; python_version < '3.12'",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pre-commit>=4.0",
+  "pyrefly>=1.2,<2",
+  "pytest>=8.0",
+  "ruff>=0.16.5",
+  "typing-extensions>=4.12.0",
+]
+frameworks = [
+  "attrs>=24.1,<27",
+  "SQLAlchemy>=2.0.36,<2.1",
+  "pydantic>=2.10,<3",
+  "Django>=5.2,<7",
+]
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/behaviours/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/behaviours"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/LICENSE",
+  "/README.md",
+  "/CHANGELOG.md",
+  "/pyproject.toml",
+  "/pyrefly.toml",
+  "/src",
+  "/tests",
+]
+
+[tool.ruff]
+src = ["src", "tests"]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+extend-select = ["I", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["behaviours"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+pythonpath = ["src"]

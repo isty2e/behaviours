@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-toml
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.5
+    hooks:
+      - id: ruff-check
+        args: [--fix, "--extend-select=I,UP"]
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: oxfmt
+        name: format markdown and yaml with oxfmt
+        entry: oxfmt --write
+        language: node
+        additional_dependencies:
+          - oxfmt@0.66.0
+        types_or: [markdown, yaml]
+        require_serial: true

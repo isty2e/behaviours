@@ -1,0 +1,4 @@
+preset = "strict"
+project-includes = ["src", "tests/typing/valid.py", "tests/typing/decorated_api.py", "tests/typing/decorated_consumer.py", "tests/typing/extended_api.py", "tests/typing/extended_consumer.py"]
+search-path = ["src", "tests/typing"]
+python-version = "3.11"
