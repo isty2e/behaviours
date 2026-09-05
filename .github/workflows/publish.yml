@@ -1,14 +1,12 @@
 # Publish to PyPI with GitHub OIDC (trusted publishing). No API tokens.
 #
-# One-time pending publisher, before the first upload:
-#   https://pypi.org/manage/account/publishing/
-#     PyPI project name: behaviours
+# Add a GitHub publisher on the existing project:
+#   https://pypi.org/manage/project/behaviours/settings/publishing/
 #     Owner: isty2e
 #     Repository name: behaviours
 #     Workflow name: publish.yml
 #     Environment name: pypi
 #
-# First 0.1.0 upload: Actions → Publish to PyPI → Run workflow → tag v0.1.0.
 # Later versions: GitHub release published from a tag that includes this file.
 
 name: Publish to PyPI
@@ -22,7 +20,6 @@ on:
         description: Git tag to build and publish
         required: true
         type: string
-        default: v0.1.0
 
 concurrency:
   group: pypi-publish
